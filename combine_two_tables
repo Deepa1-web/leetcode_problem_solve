@@ -1,0 +1,18 @@
+CREATE TABLE Person(
+    personId int PRIMARY KEY,
+     firstName varchar(20),
+    lastName varchar(20)
+);
+CREATE TABLE Address(
+addressId int primary key,
+city varchar(20),
+state varchar(20),
+personId int ,
+FOREIGN KEY(personId) REFERENCES Person(personId)
+);
+
+INSERT INTO Person VALUES(1,"Wang","Allen");
+INSERT INTO Person VALUES(2,"Alice","Bob");
+INSERT INTO Address VALUES(1,2,"New York City","New York");
+INSERT INTO Address VALUES(2,3,"Leetcode","California");
+SELECT p.firstName,p.lastName,a.city,a.state FROM Person p LEFT JOIN Address a ON p.personId=a.personId;
