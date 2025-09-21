@@ -1,0 +1,99 @@
+import java.util.*;
+
+class MovieRentingSystem {
+private final Map<Integer,TreeSet<int[]>>unrentedMovies;
+private final  Map<String,Integer>moviePriceMap;
+private final TreeSet<int[]>rentedMovies;
+    public MovieRentingSystem(int n, int[][] entries) {
+        this.unrentedMovies=new HashMap<>();
+        this.moviePriceMap=new HashMap<>();
+        this.rentedMovies=new TreeSet<>((a,b)->{
+            if(a[0]!=b[0])
+            return a[0]-b[0];
+            if(a[1]!=b[1])
+            return a[1]-b[1];
+            return a[2]-b[2];
+        });
+        Comparator<int[]>unrentedComparator=(a,b)->{
+            if(a[0]!=b[0])
+            return a[0]-b[0];
+            return a[1]-b[1];
+            
+        };
+for(int[]entry:entries){
+    int shop=entry[0];
+    int movie =entry[1];
+    int price=entry[2];
+    unrentedMovies.computeIfAbsent(movie,k->new TreeSet<>(unrentedComparator)).add(new int[]{price,shop});
+    moviePriceMap.put(shop + "_"+movie,price);
+}
+        
+    }
+    
+    public List<Integer> search(int movie) {
+        List<Integer> result=new ArrayList<>();
+        TreeSet<int[]>shops=unrentedMovies.get(movie);
+        if(shops!=null){
+            int count =0;
+            for(int[]shopEntry:shops){
+                if(count<5){
+                    result.add(shopEntry[1]);
+                    count++;
+                }else{
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+    
+    public void rent(int shop, int movie) {
+        int price=moviePriceMap.get(shop+"_"+movie);
+        unrentedMovies.get(movie).remove(new int[]{price,shop});
+       rentedMovies.add(new int[]{price,shop,movie});
+
+        
+    }
+    
+    public void drop(int shop, int movie) {
+     int price=moviePriceMap.get(shop+"_"+movie);
+     rentedMovies.remove(new int[]{price,shop,movie});
+     unrentedMovies.get(movie).add(new int[]{price,shop});
+    }
+    
+    public List<List<Integer>> report() {
+        List<List<Integer>> result=new ArrayList<>();
+        int count=0;
+        for(int[]rentedEntry:rentedMovies){
+            if(count<5){
+                result.add(Arrays.asList(rentedEntry[1],rentedEntry[2]));
+                count++;
+            }else{
+                break;
+            }
+        }
+        return result;
+    }
+    public static void main(String... args){
+        int n=3;
+        int[][] entries={{0,1,5},{0,2,6},{0,3,7},{1,1,4},{1,2,7},{2,1,5}};
+        MovieRentingSystem obj=new MovieRentingSystem(n,entries);
+        System.out.println("search for movie 1:");
+        List<Integer>param1=obj.search(1);
+        System.out.println(param1);
+       obj.rent(0,1);
+       obj.rent(1,2);
+       System.out.println("after renting report:");
+     List<List<Integer>> param_4=obj.report();
+     System.out.println(param_4);
+     obj.drop(1,2);
+     System.out.println("after dropping movie(report):");
+     List<List<Integer>>param4_b=obj.report();
+     System.out.println(param4_b);
+     System.out.println("search for movie1 again:");
+     List<Integer>param1_b=obj.search(2);
+     System.out.println(param1_b);
+     
+    }
+}
+
