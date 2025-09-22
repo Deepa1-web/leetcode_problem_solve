@@ -1,0 +1,31 @@
+import java.util.*;
+class Solution {
+    public  int maxFrequencyElements(int[] nums) {
+        Map<Integer,Integer>frequencyMap=new HashMap<>();
+        for(int num:nums){
+
+frequencyMap.put(num,frequencyMap.getOrDefault(num,0)+1);
+        }
+        int maxFrequency=0;
+        for(int frequency:frequencyMap.values()){
+            if(frequency>maxFrequency){
+                maxFrequency=frequency;
+            }
+        }
+        int totalMaxFrequencyElements=0;
+        for(int frequency:frequencyMap.values()){
+            if(frequency==maxFrequency){
+                totalMaxFrequencyElements++;
+            
+            }
+        }
+        return totalMaxFrequencyElements*maxFrequency;
+        
+    }
+    public static void main(String... args){
+        int[]arr={1,2,2,3,1,4};
+Solution s=new Solution();
+
+       s. maxFrequencyElements(arr);
+    }
+}
